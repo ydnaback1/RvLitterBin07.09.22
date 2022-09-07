@@ -1,34 +1,37 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <title>Ribble Valley Jubilee Trail 2022</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-    <link rel="stylesheet" href="css/leaflet-search.css">
-
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css">
+        <link rel="stylesheet" href="css/qgis2web.css"><link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="css/leaflet-search.css">
     <style>
         body { margin:0; padding:0; }
         #map { position:absolute; top:0; bottom:0; width:100%; }
     </style>
-</head>
-<body>
-
-<div id="map"></div>
-
-<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.7.0/proj4.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/proj4leaflet/1.0.2/proj4leaflet.min.js"></script>
-<script src="js/qgis2web_expressions.js"></script>
-<script src="js/Autolinker.min.js"></script>
-<script src="js/leaflet-search.js"></script>
-<script src="data/RVBCBinsStickerPlacedExport070922_0.js"></script>
-<script src="js/leaflet-svg-shape-markers.min.js"></script>
-
-<script>
-
+        <title>RV Litter Bins w Sticker 07.09.22</title>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="js/proj4.js"></script>
+        <script src="js/proj4leaflet.js"></script>
+        <script src="js/leaflet-search.js"></script>
+        <script src="data/RVBCBinsStickerPlacedExport070922_0.js"></script>
+        <script>
     var apiKey = 'NAI9sZS6RxIdV4MpIdHfHR9lbQ9OPOwa';
 
     var serviceUrl = 'https://api.os.uk/maps/raster/v1/zxy';
@@ -60,14 +63,7 @@
 
     var map = L.map('map', mapOptions);
 
-    var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
-
-            map.addControl(new L.Control.Search({
-            layer: layer_RVBCBinsStickerPlacedExport070922_0,
-            initial: false,
-            hideMarkerOnCollapse: true,
-            propertyName: 'Unique ID'}));
-
+        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
         var bounds_group = new L.featureGroup([]);
         function setBounds() {
             if (bounds_group.getLayers().length) {
@@ -307,7 +303,6 @@
         });
         bounds_group.addLayer(layer_RVBCBinsStickerPlacedExport070922_0);
         map.addLayer(layer_RVBCBinsStickerPlacedExport070922_0);
-
 // BASE MAPS
     var osroad = L.tileLayer(serviceUrl + '/Road_27700/{z}/{x}/{y}.png?key='+ apiKey, {   
             maxZoom: 10,
@@ -327,9 +322,17 @@
         'OS Road' : osroad,
         'OS Outdoor' : osout
     };
+        L.control.layers(baseMaps,{'RVBC Bins-Sticker Placed Export 07.09.22<br /><table><tr><td style="text-align: center;"><img src="legend/RVBCBinsStickerPlacedExport070922_0_FreestandingDogBin0.png" /></td><td>Freestanding - Dog Bin</td></tr><tr><td style="text-align: center;"><img src="legend/RVBCBinsStickerPlacedExport070922_0_FreestandingLitterBin1.png" /></td><td>Freestanding - Litter Bin</td></tr><tr><td style="text-align: center;"><img src="legend/RVBCBinsStickerPlacedExport070922_0_GeminiSquareLitterBin2.png" /></td><td>Gemini Square - Litter Bin</td></tr><tr><td style="text-align: center;"><img src="legend/RVBCBinsStickerPlacedExport070922_0_PostMountedDogBin3.png" /></td><td>Post Mounted - Dog Bin</td></tr><tr><td style="text-align: center;"><img src="legend/RVBCBinsStickerPlacedExport070922_0_PostMountedLitterBin4.png" /></td><td>Post Mounted - Litter Bin</td></tr><tr><td style="text-align: center;"><img src="legend/RVBCBinsStickerPlacedExport070922_0_RecyclingLitterBin5.png" /></td><td>Recycling - Litter Bin</td></tr><tr><td style="text-align: center;"><img src="legend/RVBCBinsStickerPlacedExport070922_0_Recycling140LitterBin6.png" /></td><td>Recycling 140 - Litter Bin</td></tr><tr><td style="text-align: center;"><img src="legend/RVBCBinsStickerPlacedExport070922_0_Spider140DogBin7.png" /></td><td>Spider 140 - Dog Bin</td></tr><tr><td style="text-align: center;"><img src="legend/RVBCBinsStickerPlacedExport070922_0_Spider140LitterBin8.png" /></td><td>Spider 140 - Litter Bin</td></tr><tr><td style="text-align: center;"><img src="legend/RVBCBinsStickerPlacedExport070922_0_TopsyLitterBin9.png" /></td><td>Topsy - Litter Bin</td></tr></table>': layer_RVBCBinsStickerPlacedExport070922_0,},{collapsed:false}).addTo(map);
+        setBounds();
+        map.addControl(new L.Control.Search({
+            layer: layer_RVBCBinsStickerPlacedExport070922_0,
+            initial: false,
+            zoom: 20,
+            hideMarkerOnCollapse: true,
+            propertyName: 'Unique ID'}));
 
-       L.control.layers(baseMaps,{'RVBC Bins-Sticker Placed Export 07.09.22<br /><table><tr><td style="text-align: center;"><img src="legend/RVBCBinsStickerPlacedExport070922_0_FreestandingDogBin0.png" /></td><td>Freestanding - Dog Bin</td></tr><tr><td style="text-align: center;"><img src="legend/RVBCBinsStickerPlacedExport070922_0_FreestandingLitterBin1.png" /></td><td>Freestanding - Litter Bin</td></tr><tr><td style="text-align: center;"><img src="legend/RVBCBinsStickerPlacedExport070922_0_GeminiSquareLitterBin2.png" /></td><td>Gemini Square - Litter Bin</td></tr><tr><td style="text-align: center;"><img src="legend/RVBCBinsStickerPlacedExport070922_0_PostMountedDogBin3.png" /></td><td>Post Mounted - Dog Bin</td></tr><tr><td style="text-align: center;"><img src="legend/RVBCBinsStickerPlacedExport070922_0_PostMountedLitterBin4.png" /></td><td>Post Mounted - Litter Bin</td></tr><tr><td style="text-align: center;"><img src="legend/RVBCBinsStickerPlacedExport070922_0_RecyclingLitterBin5.png" /></td><td>Recycling - Litter Bin</td></tr><tr><td style="text-align: center;"><img src="legend/RVBCBinsStickerPlacedExport070922_0_Recycling140LitterBin6.png" /></td><td>Recycling 140 - Litter Bin</td></tr><tr><td style="text-align: center;"><img src="legend/RVBCBinsStickerPlacedExport070922_0_Spider140DogBin7.png" /></td><td>Spider 140 - Dog Bin</td></tr><tr><td style="text-align: center;"><img src="legend/RVBCBinsStickerPlacedExport070922_0_Spider140LitterBin8.png" /></td><td>Spider 140 - Litter Bin</td></tr><tr><td style="text-align: center;"><img src="legend/RVBCBinsStickerPlacedExport070922_0_TopsyLitterBin9.png" /></td><td>Topsy - Litter Bin</td></tr></table>': layer_RVBCBinsStickerPlacedExport070922_0,},{collapsed:false}).addTo(map);
-</script>
-
-</body>
+        document.getElementsByClassName('search-button')[0].className +=
+         ' fa fa-binoculars';
+        </script>
+    </body>
 </html>
