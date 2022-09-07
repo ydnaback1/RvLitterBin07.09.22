@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>Ribble Valley Jubilee Trail 2022</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="css/leaflet-search.css">
+
+    <style>
+        body { margin:0; padding:0; }
+        #map { position:absolute; top:0; bottom:0; width:100%; }
+    </style>
+</head>
+<body>
+
+<div id="map"></div>
+
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.7.0/proj4.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/proj4leaflet/1.0.2/proj4leaflet.min.js"></script>
+<script src="js/qgis2web_expressions.js"></script>
+<script src="js/Autolinker.min.js"></script>
+<script src="js/leaflet-search.js"></script>
+<script src="data/RVBCBinsStickerPlacedExport070922_0.js"></script>
+<script src="js/leaflet-svg-shape-markers.min.js"></script>
+
+<script>
+
+    var apiKey = 'NAI9sZS6RxIdV4MpIdHfHR9lbQ9OPOwa';
+
+    var serviceUrl = 'https://api.os.uk/maps/raster/v1/zxy';
+
+// Setup the EPSG:27700 (British National Grid) projection.
+    var bngcrs = new L.Proj.CRS('EPSG:27700', '+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 +ellps=airy +towgs84=446.448,-125.157,542.06,0.15,0.247,0.842,-20.489 +units=m +no_defs', {
+        resolutions: [ 896.0, 448.0, 224.0, 112.0, 56.0, 28.0, 14.0, 7.0, 3.5, 1.75, 0.875, 0.4375, 0.21875, 0.109375 ],
+        origin: [ -238375.0, 1376256.0 ]
+    });
+
+// Transform coordinates.
+    var transformCoords = function(arr) {
+        return proj4('EPSG:27700', 'EPSG:4326', arr).reverse();
+    };
+
+// Initialize the map.
+    var mapOptions = {
+        crs: bngcrs,
+        tap: false,
+       center: transformCoords([ 374288,442016 ]),
+        zoom: 4,
+        minZoom: 3,
+        maxBounds: [
+            transformCoords([ 352289.0, 428245.0]),
+            transformCoords([ 392924.0, 461772.0 ])
+        ],
+        attributionControl: false,
+    };
+
+    var map = L.map('map', mapOptions);
+
+    var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+
+            map.addControl(new L.Control.Search({
+            layer: layer_RVBCBinsStickerPlacedExport070922_0,
+            initial: false,
+            hideMarkerOnCollapse: true,
+            propertyName: 'Unique ID'}));
+
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+            if (bounds_group.getLayers().length) {
+                map.fitBounds(bounds_group.getBounds());
+            }
+        }
+        function pop_RVBCBinsStickerPlacedExport070922_0(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['fid'] !== null ? autolinker.link(feature.properties['fid'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Unique ID</th>\
+                        <td>' + (feature.properties['Unique ID'] !== null ? autolinker.link(feature.properties['Unique ID'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Bin Type</th>\
+                        <td>' + (feature.properties['Bin Type'] !== null ? autolinker.link(feature.properties['Bin Type'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Type</th>\
+                        <td>' + (feature.properties['Type'] !== null ? autolinker.link(feature.properties['Type'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Emptied By</th>\
+                        <td>' + (feature.properties['Emptied By'] !== null ? autolinker.link(feature.properties['Emptied By'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Location</th>\
+                        <td>' + (feature.properties['Location'] !== null ? autolinker.link(feature.properties['Location'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Nearest Address</th>\
+                        <td>' + (feature.properties['Nearest Address'] !== null ? autolinker.link(feature.properties['Nearest Address'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Date Surveyed</th>\
+                        <td>' + (feature.properties['Date Surveyed'] !== null ? autolinker.link(feature.properties['Date Surveyed'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Surveyed By</th>\
+                        <td>' + (feature.properties['Surveyed By'] !== null ? autolinker.link(feature.properties['Surveyed By'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Sticker Placed</th>\
+                        <td>' + (feature.properties['Sticker Placed'] !== null ? autolinker.link(feature.properties['Sticker Placed'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Bin Type and Type</th>\
+                        <td>' + (feature.properties['Bin Type and Type'] !== null ? autolinker.link(feature.properties['Bin Type and Type'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_RVBCBinsStickerPlacedExport070922_0_0(feature) {
+            switch(String(feature.properties['Bin Type and Type'])) {
+                case 'Freestanding - Dog Bin':
+                    return {
+                pane: 'pane_RVBCBinsStickerPlacedExport070922_0',
+                radius: 8.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(233,46,167,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Freestanding - Litter Bin':
+                    return {
+                pane: 'pane_RVBCBinsStickerPlacedExport070922_0',
+                radius: 8.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(205,89,234,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Gemini Square - Litter Bin':
+                    return {
+                pane: 'pane_RVBCBinsStickerPlacedExport070922_0',
+                radius: 8.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(203,36,55,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Post Mounted - Dog Bin':
+                    return {
+                pane: 'pane_RVBCBinsStickerPlacedExport070922_0',
+                radius: 8.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(177,226,131,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Post Mounted - Litter Bin':
+                    return {
+                pane: 'pane_RVBCBinsStickerPlacedExport070922_0',
+                radius: 8.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(83,117,205,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Recycling - Litter Bin':
+                    return {
+                pane: 'pane_RVBCBinsStickerPlacedExport070922_0',
+                radius: 8.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(215,110,30,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Recycling 140 - Litter Bin':
+                    return {
+                pane: 'pane_RVBCBinsStickerPlacedExport070922_0',
+                radius: 8.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(227,226,137,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Spider 140 - Dog Bin':
+                    return {
+                pane: 'pane_RVBCBinsStickerPlacedExport070922_0',
+                radius: 8.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(124,233,132,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Spider 140 - Litter Bin':
+                    return {
+                pane: 'pane_RVBCBinsStickerPlacedExport070922_0',
+                radius: 8.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(55,193,217,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Topsy - Litter Bin':
+                    return {
+                pane: 'pane_RVBCBinsStickerPlacedExport070922_0',
+                radius: 8.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(117,82,223,1.0)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_RVBCBinsStickerPlacedExport070922_0');
+        map.getPane('pane_RVBCBinsStickerPlacedExport070922_0').style.zIndex = 400;
+        map.getPane('pane_RVBCBinsStickerPlacedExport070922_0').style['mix-blend-mode'] = 'normal';
+        var layer_RVBCBinsStickerPlacedExport070922_0 = new L.geoJson(json_RVBCBinsStickerPlacedExport070922_0, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_RVBCBinsStickerPlacedExport070922_0',
+            layerName: 'layer_RVBCBinsStickerPlacedExport070922_0',
+            pane: 'pane_RVBCBinsStickerPlacedExport070922_0',
+            onEachFeature: pop_RVBCBinsStickerPlacedExport070922_0,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_RVBCBinsStickerPlacedExport070922_0_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_RVBCBinsStickerPlacedExport070922_0);
+        map.addLayer(layer_RVBCBinsStickerPlacedExport070922_0);
+
+// BASE MAPS
+    var osroad = L.tileLayer(serviceUrl + '/Road_27700/{z}/{x}/{y}.png?key='+ apiKey, {   
+            maxZoom: 10,
+        });
+
+    var osout = L.tileLayer(serviceUrl + '/Outdoor_27700/{z}/{x}/{y}.png?key='+ apiKey, {   
+            maxZoom: 10,
+        }).addTo(map);
+
+    var osleisure = L.tileLayer(serviceUrl + '/Leisure_27700/{z}/{x}/{y}.png?key='+ apiKey, {   
+            maxZoom: 9,
+        });
+
+//   
+    var baseMaps = { 
+        'OS Leisure' : osleisure,
+        'OS Road' : osroad,
+        'OS Outdoor' : osout
+    };
+
+       L.control.layers(baseMaps,{'RVBC Bins-Sticker Placed Export 07.09.22<br /><table><tr><td style="text-align: center;"><img src="legend/RVBCBinsStickerPlacedExport070922_0_FreestandingDogBin0.png" /></td><td>Freestanding - Dog Bin</td></tr><tr><td style="text-align: center;"><img src="legend/RVBCBinsStickerPlacedExport070922_0_FreestandingLitterBin1.png" /></td><td>Freestanding - Litter Bin</td></tr><tr><td style="text-align: center;"><img src="legend/RVBCBinsStickerPlacedExport070922_0_GeminiSquareLitterBin2.png" /></td><td>Gemini Square - Litter Bin</td></tr><tr><td style="text-align: center;"><img src="legend/RVBCBinsStickerPlacedExport070922_0_PostMountedDogBin3.png" /></td><td>Post Mounted - Dog Bin</td></tr><tr><td style="text-align: center;"><img src="legend/RVBCBinsStickerPlacedExport070922_0_PostMountedLitterBin4.png" /></td><td>Post Mounted - Litter Bin</td></tr><tr><td style="text-align: center;"><img src="legend/RVBCBinsStickerPlacedExport070922_0_RecyclingLitterBin5.png" /></td><td>Recycling - Litter Bin</td></tr><tr><td style="text-align: center;"><img src="legend/RVBCBinsStickerPlacedExport070922_0_Recycling140LitterBin6.png" /></td><td>Recycling 140 - Litter Bin</td></tr><tr><td style="text-align: center;"><img src="legend/RVBCBinsStickerPlacedExport070922_0_Spider140DogBin7.png" /></td><td>Spider 140 - Dog Bin</td></tr><tr><td style="text-align: center;"><img src="legend/RVBCBinsStickerPlacedExport070922_0_Spider140LitterBin8.png" /></td><td>Spider 140 - Litter Bin</td></tr><tr><td style="text-align: center;"><img src="legend/RVBCBinsStickerPlacedExport070922_0_TopsyLitterBin9.png" /></td><td>Topsy - Litter Bin</td></tr></table>': layer_RVBCBinsStickerPlacedExport070922_0,},{collapsed:false}).addTo(map);
+</script>
+
+</body>
+</html>
